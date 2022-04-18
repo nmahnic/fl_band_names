@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:band_names/services/socket_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pie_chart/pie_chart.dart';
 import 'package:provider/provider.dart';
 
 import '../models/models.dart';
@@ -36,19 +37,27 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar( 
         title: const Text(' Band Names', style: TextStyle(color: Colors.black87)),
-        backgroundColor: Colors.white,
         actions: [
           Container(
             margin: const EdgeInsets.only( right: 10),
             child: socketServices.serverStatus == ServerStatus.online ?
-                  Icon( Icons.check_circle, color: Colors.blue[300]) :
+                  Icon( Icons.check_circle, color: Colors.green[300]) :
                   const Icon( Icons.offline_bolt, color: Colors.red),
           )
         ],
       ),
-      body: ListView.builder(
-        itemCount: bands.length,
-        itemBuilder: ( _ , index)  => _BandTile(band: bands[index])
+      body: Column(
+        children: [
+
+          _showGraph(),
+
+          Expanded(
+            child: ListView.builder(
+              itemCount: bands.length,
+              itemBuilder: ( _ , index)  => _BandTile(band: bands[index])
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon( Icons.add ),
@@ -121,6 +130,33 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     Navigator.pop(context);
+  }
+
+  Widget _showGraph(){
+
+    Map<String, double> dataMap = new Map();
+    bands.forEach( (band) => { 
+      dataMap.putIfAbsent(band.name, () => band.votes.toDouble()) 
+    });
+
+    if(dataMap.isNotEmpty){
+      return SizedBox(
+        width: double.infinity,
+        height: 200,
+        child: PieChart(
+          dataMap: dataMap,
+          chartValuesOptions: const ChartValuesOptions(
+            showChartValueBackground: false,
+            showChartValues: true,
+            showChartValuesInPercentage: true,
+            showChartValuesOutside: false,
+            decimalPlaces: 0,
+          ),
+        ),
+      );
+    } else {
+      return const SizedBox(width: double.infinity, height: 20,);
+    }
   }
 
 }
