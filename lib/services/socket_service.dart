@@ -23,7 +23,7 @@ class SocketServices with ChangeNotifier {
   Function get emit => _socket.emit;
 
   _initConfig() {
-    _socket = IO.io('http://192.168.1.51:3000/', 
+    _socket = IO.io('http://localhost:3000/', 
       OptionBuilder()
         .setTransports(['websocket']) // for Flutter or Dart VM // optional
         .build());
