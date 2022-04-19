@@ -23,7 +23,8 @@ class SocketServices with ChangeNotifier {
   Function get emit => _socket.emit;
 
   _initConfig() {
-    _socket = IO.io('http://localhost:3000/', 
+    // _socket = IO.io('http://localhost:3000/', 
+    _socket = IO.io('https://fl-socket-band-names.herokuapp.com/', 
       OptionBuilder()
         .setTransports(['websocket']) // for Flutter or Dart VM // optional
         .build());
